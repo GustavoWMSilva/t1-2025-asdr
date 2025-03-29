@@ -26,6 +26,13 @@ WHITE_SPACE_CHAR=[\n\r\ \t\b\012]
 "if"		{ return AsdrSample.IF; }
 "else"		{ return AsdrSample.ELSE; }
 "fi"		{ return AsdrSample.FI; }
+"func"		{ return AsdrSample.FUNC; }
+"void"		{ return AsdrSample.VOID; }
+"int"		{ return AsdrSample.INT; }
+"double"		{ return AsdrSample.DOUBLE; }
+"boolean"		{ return AsdrSample.BOOLEAN; }
+"bloco"		{ return AsdrSample.BLOCO; }
+
 
 [:jletter:][:jletterdigit:]* { return AsdrSample.IDENT; }  
 
@@ -34,6 +41,7 @@ WHITE_SPACE_CHAR=[\n\r\ \t\b\012]
 "{" |
 "}" |
 ";" |
+"," |
 "(" |
 ")" |
 "+" |

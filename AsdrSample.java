@@ -15,6 +15,7 @@ public class AsdrSample {
   public static final int BOOLEAN = 309;
   public static final int FUNC = 310;
   public static final int VOID = 311;
+  public static final int BLOCO = 312;
 
     public static final String tokenList[] = 
       {"IDENT",
@@ -27,7 +28,8 @@ public class AsdrSample {
        "DOUBLE",
        "BOOLEAN",
        "FUNC",
-       "VOID"
+       "VOID",
+       "BLOCO"
       };
                                       
   /* referencia ao objeto Scanner gerado pelo JFLEX */
@@ -90,15 +92,15 @@ public class AsdrSample {
 //         yyerror("esperado '{'");
 //    }
 
-  private void Prog() {
-      if (laToken == INT || laToken == DOUBLE || laToken == BOOLEAN || laToken == '{') {
-         if (debug) System.out.println("Prog --> ListaDecl Bloco");
-         ListaDecl();
-         Bloco();
-      }
-      else 
-         yyerror("esperado int, double ou boolean ou {}");
+private void Prog() {
+   if (laToken==FUNC ||laToken == INT || laToken == DOUBLE || laToken == BOOLEAN || laToken == '{') {
+      if (debug) System.out.println("Prog --> ListaDecl Bloco");
+      ListaDecl();
+      Bloco();
    }
+   else 
+      yyerror("esperado FUNC, int, double ou boolean ou {}" + laToken);
+}
 
 
    // ListaDecl -->  DeclVar  ListaDecl
@@ -161,7 +163,7 @@ public class AsdrSample {
             ListaIdent();
       }
       else {
-         if (debug) System.out.println("RestoListaIdent -->  (*vazio*)  ");
+         if (debug) System.out.println("RestoListaIdent -->  (*vazio*)  " + laToken);
          // aceitar como vazio  <-- my way
          // ou testar o follow de RestoListaIdent
          // O prof falou para o vazio em branco
@@ -173,9 +175,11 @@ public class AsdrSample {
    //          | /* vazio */
    private void DeclFun() {
       if (laToken == FUNC) {
-         if (debug) System.out.println("DeclFun --> FUNC tipoOuVoid IDENT '(' FormalPar ')' '{' DeclVar ListaCmd '}' DeclFun");
+         if (debug) System.out.println("DeclFun --> FUNC tipoOuVoid IDENT '(' FormalPar ')' '{' DeclVar ListaCmd '}' DeclFun" + laToken);
             verifica(FUNC);
+            System.out.println("DeclFun --> tipoOuVoid" + laToken);
             TipoOuVoid();
+            System.out.println("DeclFun --> IDENT" + laToken);
             verifica(IDENT);
             verifica('(');
             FormalPar();
@@ -214,7 +218,7 @@ public class AsdrSample {
             ParamList();
       }
       else {
-         if (debug) System.out.println("FormalPar -->  (*vazio*)  ");
+         if (debug) System.out.println("FormalPar -->  (*vazio*)  " + laToken);
          // aceitar como vazio  <-- my way
          // ou testar o follow de FormalPar
          }
@@ -251,12 +255,16 @@ public class AsdrSample {
 
 
   private void Bloco() {
+      if(laToken == '{'){
       if (debug) System.out.println("Bloco --> { ListaCmd }");
       //if (laToken == '{') {
          verifica('{');
          ListaCmd();
          verifica('}');
       //}
+      } else {
+         if (debug) System.out.println("Bloco -->  (*vazio*)  ");
+      }
   }
 
    // ListaCmd --> Cmd ListaCmd | /* vazio */
