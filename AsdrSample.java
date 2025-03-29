@@ -10,6 +10,11 @@ public class AsdrSample {
   public static final int IF	 = 304;
   public static final int FI	 = 305;
   public static final int ELSE = 306;
+  public static final int INT = 307;
+  public static final int DOUBLE = 308;
+  public static final int BOOLEAN = 309;
+  public static final int FUNC = 310;
+  public static final int VOID = 311;
 
     public static final String tokenList[] = 
       {"IDENT",
@@ -17,7 +22,13 @@ public class AsdrSample {
 		 "WHILE", 
 		 "IF", 
 		 "FI",
-		 "ELSE"  };
+		 "ELSE",
+       "INT",
+       "DOUBLE",
+       "BOOLEAN",
+       "FUNC",
+       "VOID"
+      };
                                       
   /* referencia ao objeto Scanner gerado pelo JFLEX */
   private Yylex lexer;
@@ -70,23 +81,188 @@ public class AsdrSample {
    | ( E )
 ***/ 
 
+//   private void Prog() {
+//       if (laToken == '{') {
+//          if (debug) System.out.println("Prog --> Bloco");
+//          Bloco();
+//       }
+//       else 
+//         yyerror("esperado '{'");
+//    }
+
   private void Prog() {
-      if (laToken == '{') {
-         if (debug) System.out.println("Prog --> Bloco");
+      if (laToken == INT || laToken == DOUBLE || laToken == BOOLEAN || laToken == '{') {
+         if (debug) System.out.println("Prog --> ListaDeclVar Bloco");
+         ListaDecl();
          Bloco();
       }
       else 
-        yyerror("esperado '{'");
+         yyerror("esperado int, double ou boolean ou {}");
    }
+
+
+   // ListaDecl -->  DeclVar  ListaDecl
+   // |  DeclFun  ListaDecl
+   // |  /* vazio */
+  private void ListaDecl() {
+      if (laToken == INT || laToken == DOUBLE || laToken == BOOLEAN) {
+         if (debug) System.out.println("Prog --> ListaDeclVar Bloco");
+            DeclVar();
+            ListaDecl();
+      } else if (laToken == FUNC) {
+         if (debug) System.out.println("Prog --> ListaDeclFun Bloco");
+            DeclFun();
+            ListaDecl();
+      } else {
+         if (debug) System.out.println("ListaDecl -->  (*vazio*)  ");
+         // aceitar como vazio  <-- my way
+         // ou testar o follow de ListaDecl
+         }
+   }
+
+  private void DeclVar() {
+      Tipo();
+      ListaIdent();
+      verifica(';');
+   }
+
+   private void Tipo() {
+      if (laToken == INT) {
+         if (debug) System.out.println("Tipo --> int");
+            verifica(INT);
+      }
+      else if (laToken == DOUBLE) {
+         if (debug) System.out.println("Tipo --> double");
+            verifica(DOUBLE);
+      }
+      else if (laToken == BOOLEAN) {
+         if (debug) System.out.println("Tipo --> boolean");
+            verifica(BOOLEAN);
+      }
+      else 
+         yyerror("esperado int, double ou boolean");
+   }
+
+   private void ListaIdent() {
+      if (laToken == IDENT) {
+         if (debug) System.out.println("ListaIdent --> IDENT RestoListaIdent");
+            verifica(IDENT);
+            RestoListaIdent();
+      }
+      else 
+         yyerror("esperado identificador");
+   }
+
+   //   DeclFun --> FUNC tipoOuVoid IDENT '(' FormalPar ')' '{' DeclVar ListaCmd '}' DeclFun
+   //          | /* vazio */
+   private void DeclFun() {
+      if (laToken == FUNC) {
+         if (debug) System.out.println("DeclFun --> FUNC tipoOuVoid IDENT '(' FormalPar ')' '{' DeclVar ListaCmd '}' DeclFun");
+            verifica(FUNC);
+            TipoOuVoid();
+            verifica(IDENT);
+            verifica('(');
+            FormalPar();
+            verifica(')');
+            verifica('{');
+            DeclVar();
+            ListaCmd();
+            verifica('}');
+            DeclFun();
+      }
+      else {
+         if (debug) System.out.println("DeclFun -->  (*vazio*)  ");
+         // aceitar como vazio  <-- my way
+         // ou testar o follow de DeclFun
+         }
+   }
+
+   // TipoOuVoid --> Tipo | VOID
+   private void TipoOuVoid() {
+      if (laToken == INT || laToken == DOUBLE || laToken == BOOLEAN) {
+         if (debug) System.out.println("TipoOuVoid --> Tipo");
+            Tipo();
+      }
+      else if (laToken == VOID) {
+         if (debug) System.out.println("TipoOuVoid --> VOID");
+            verifica(VOID);
+      }
+      else 
+         yyerror("esperado int, double, boolean ou void");
+   }
+
+   // FormalPar -> paramList | /* vazio */
+   private void FormalPar() {
+      if (laToken == INT || laToken == DOUBLE || laToken == BOOLEAN) {
+         if (debug) System.out.println("FormalPar --> paramList");
+            ParamList();
+      }
+      else {
+         if (debug) System.out.println("FormalPar -->  (*vazio*)  ");
+         // aceitar como vazio  <-- my way
+         // ou testar o follow de FormalPar
+         }
+   }
+
+   // paramList --> Tipo IDENT , ParamList
+   // | Tipo IDENT 
+   private void ParamList() {
+      if (laToken == INT || laToken == DOUBLE || laToken == BOOLEAN) {
+         if (debug) System.out.println("ParamList --> Tipo IDENT , ParamList");
+            Tipo();
+            verifica(IDENT);
+            verifica(',');
+            ParamList();
+      }
+      else if (laToken == IDENT) {
+         if (debug) System.out.println("ParamList --> Tipo IDENT");
+            Tipo();
+            verifica(IDENT);
+      }
+      else 
+         yyerror("esperado int, double ou boolean");
+   }
+
+   private void RestoListaIdent() {
+      if (laToken == ',') {
+         if (debug) System.out.println("RestoListaIdent --> , IDENT RestoListaIdent");
+            verifica(',');
+            verifica(IDENT);
+            RestoListaIdent();
+      }
+      else {
+         if (debug) System.out.println("RestoListaIdent -->  (*vazio*)  ");
+         // aceitar como vazio  <-- my way
+         // ou testar o follow de RestoListaIdent
+         // O prof falou para o vazio em branco
+         }
+   }
+
+
+
 
   private void Bloco() {
       if (debug) System.out.println("Bloco --> { Cmd }");
       //if (laToken == '{') {
          verifica('{');
-         Cmd();
+         ListaCmd();
          verifica('}');
       //}
   }
+
+   // ListaCmd --> Cmd ListaCmd | /* vazio */
+   private void ListaCmd() {
+      if (laToken == WHILE || laToken == IF || laToken == IDENT || laToken == '{') {
+         if (debug) System.out.println("ListaCmd --> Cmd ListaCmd");
+         Cmd();
+         ListaCmd();
+      }
+      else {
+         if (debug) System.out.println("ListaCmd -->  (*vazio*)  ");
+         // aceitar como vazio  <-- my way
+         // ou testar o follow de ListaCmd
+         }
+   }
 
   private void Cmd() {
       if (laToken == '{') {
@@ -186,7 +362,7 @@ public class AsdrSample {
  	else yyerror("Esperado operando (, identificador ou numero");
    }
 
-
+ //GUSTAVO O VERIFICA TÀ AQUI
   private void verifica(int expected) {
       if (laToken == expected)
          laToken = this.yylex();
