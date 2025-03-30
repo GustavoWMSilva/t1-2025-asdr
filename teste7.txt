@@ -1,0 +1,7 @@
+$TRACE_ON
+func void loop (int n) {
+    int text;
+    while (n) {
+        n = n - 1;
+    }
+}

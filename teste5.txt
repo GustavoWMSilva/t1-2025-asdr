@@ -1,0 +1,5 @@
+$TRACE_ON
+func void mensagem () {
+    int a;
+    a = 5;
+}

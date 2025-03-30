@@ -1,0 +1,5 @@
+$TRACE_ON
+func void teste (int a) {
+    int resultado;
+    resultado = a + 10;
+}

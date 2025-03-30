@@ -1,0 +1,10 @@
+$TRACE_ON
+func void fatorial (int n) {
+    int teste;
+    if (n) {
+        teste = 1;
+    } else {
+        teste = 5;
+    }
+    teste = teste * n ;
+}

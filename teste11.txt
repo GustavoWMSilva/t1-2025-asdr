@@ -1,0 +1,17 @@
+$TRACE_ON
+
+func void main () {
+    int a, b;
+    a = 10;
+    b = 20;
+    
+    if (a) {
+        b = b - a;
+    }
+    
+    while (b) {
+        b = b - 1;
+    }
+    
+    acabou =  0;
+}

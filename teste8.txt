@@ -1,0 +1,5 @@
+$TRACE_ON
+func void calcular (int x, int y) {
+    int resultado;
+    resultado = (x + y) * 2 / (x - y);
+}

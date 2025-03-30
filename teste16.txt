@@ -1,0 +1,4 @@
+$TRACE_ON
+
+func void y (int b) {int a;
+a = 10; a = b + 10;  teste = 5; }

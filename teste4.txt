@@ -1,0 +1,5 @@
+$TRACE_ON
+func int soma (int a, int b) {
+    int resultado;
+    resultado = a + b;
+}

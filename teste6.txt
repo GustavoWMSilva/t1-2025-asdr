@@ -1,0 +1,9 @@
+$TRACE_ON
+func void verificar (int valor) {
+    int valor;
+    if (valor) {
+        valor = valor * 2;
+    } else {
+        valor = valor - 1;
+    }
+}

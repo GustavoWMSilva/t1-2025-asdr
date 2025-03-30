@@ -96,7 +96,7 @@ private void Prog() {
    if (laToken==FUNC ||laToken == INT || laToken == DOUBLE || laToken == BOOLEAN || laToken == '{') {
       if (debug) System.out.println("Prog --> ListaDecl Bloco");
       ListaDecl();
-      Bloco();
+      // Bloco();
    }
    else 
       yyerror("esperado FUNC, int, double ou boolean ou {}" + laToken);
@@ -143,7 +143,7 @@ private void Prog() {
             verifica(BOOLEAN);
       }
       else 
-         yyerror("esperado int, double ou boolean");
+         yyerror("Tipo -> esperado int, double ou boolean " + laToken);
    }
 
    private void ListaIdent() {
@@ -234,7 +234,7 @@ private void Prog() {
             RestoParamList();
       }
       else 
-         yyerror("esperado int, double ou boolean");
+         yyerror("ParamList -> esperado int, double ou boolean");
    }
 
    private void RestoParamList() {
@@ -441,6 +441,9 @@ private void Prog() {
      System.err.println("Entrada rejeitada");
      System.out.println("\n\nFalhou!!!");
      System.exit(1);
+   //   como faco para ao inves de sair, ele ir para o proximo file do while do main?
+   
+   
      
   }
 
@@ -460,12 +463,20 @@ private void Prog() {
    *               the scanner on.
    */
   public static void main(String[] args) {
+   // pegar todos os arquivos txt de forma automatica que começam com teste que esta no mesmo diretorio desse arquivo
+
+   String[] files = {"teste1.txt", "teste2.txt", "teste3.txt", "teste4.txt", "teste5.txt", "teste6.txt", "teste7.txt", "teste8.txt", "teste9.txt", "teste10.txt", "teste11.txt", "teste12.txt", "teste13.txt", "teste14.txt", "teste15.txt", "teste16.txt"};   
+   String[] erros = {"erro4.txt", "erro5.txt", "erro6.txt", "erro7.txt", "erro8.txt", "erro9.txt", "erro10.txt", "erro11.txt", "erro12.txt", "erro13.txt"};   
+      for (String file : erros) {
+
      AsdrSample parser = null;
      try {
-         if (args.length == 0)
-            parser = new AsdrSample(new InputStreamReader(System.in));
-         else 
-            parser = new  AsdrSample( new java.io.FileReader(args[0]));
+         // if (args.length == 0)
+         //    parser = new AsdrSample(new InputStreamReader(System.in));
+         // else 
+         System.out.println("Arquivo: " + file);
+            // parser = new  AsdrSample( new java.io.FileReader(args[0]));
+            parser = new  AsdrSample( new java.io.FileReader("./"+file));
 
           parser.setDebug(false);
           laToken = parser.yylex();          
@@ -481,6 +492,7 @@ private void Prog() {
         catch (java.io.FileNotFoundException e) {
           System.out.println("File not found : \""+args[0]+"\"");
         }
+   }
 //        catch (java.io.IOException e) {
 //          System.out.println("IO error scanning file \""+args[0]+"\"");
 //          System.out.println(e);

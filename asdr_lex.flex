@@ -38,6 +38,8 @@ WHITE_SPACE_CHAR=[\n\r\ \t\b\012]
 
 [0-9]+ 	{ return AsdrSample.NUM; }
 
+"<"|
+">"|
 "{" |
 "}" |
 ";" |
@@ -45,6 +47,8 @@ WHITE_SPACE_CHAR=[\n\r\ \t\b\012]
 "(" |
 ")" |
 "+" |
+"*" |
+"/" |
 "-" |
 "="    	{ return yytext().charAt(0); } 
 
