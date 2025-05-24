@@ -1,3 +1,9 @@
+/*
+ * Alunos: Gabriel Wagner Piazenski,
+ *         Gustavo Wiliam Martins da Silva,
+ *         Lorenzo Duarte More
+ */
+ 
 %%
 
 %{
@@ -38,8 +44,6 @@ WHITE_SPACE_CHAR=[\n\r\ \t\b\012]
 
 [0-9]+ 	{ return AsdrSample.NUM; }
 
-"<"|
-">"|
 "{" |
 "}" |
 ";" |
